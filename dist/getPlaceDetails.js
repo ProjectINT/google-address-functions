@@ -37,7 +37,6 @@ const getPlaceDetails = ({
       address_components: addressComponents,
       geometry
     } = response;
-    console.log('geometry', geometry);
 
     // https://developers.google.com/maps/documentation/geocoding/start#Types
     const country = getAddressComponentByType(addressComponents, 'country');

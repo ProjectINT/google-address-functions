@@ -64,8 +64,6 @@ const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params
 
     const { address_components: addressComponents, geometry } = response;
     
-    console.log('geometry', geometry);
-
     // https://developers.google.com/maps/documentation/geocoding/start#Types
     const country = getAddressComponentByType(addressComponents, 'country');
     const state = getAddressComponentByType(addressComponents, 'administrative_area_level_1') || getAddressComponentByType(addressComponents, 'administrative_area_level_2');
