@@ -26,7 +26,7 @@ const getPlaceDetails = ({
   }
   const request = {
     placeId,
-    fields: ['address_components', 'formatted_address', 'name', 'types']
+    fields: ['address_components', 'formatted_address', 'name', 'types', 'geometry']
   };
   placesService.getDetails(request, (response, status) => {
     if (status !== PlacesServiceStatus.OK) {
@@ -34,7 +34,8 @@ const getPlaceDetails = ({
       return;
     }
     const {
-      address_components: addressComponents
+      address_components: addressComponents,
+      geometry
     } = response;
 
     // https://developers.google.com/maps/documentation/geocoding/start#Types
@@ -44,6 +45,7 @@ const getPlaceDetails = ({
     const street = getAddressComponentByType(addressComponents, 'route');
     const number = getAddressComponentByType(addressComponents, 'street_number');
     const zipCode = getAddressComponentByType(addressComponents, 'postal_code');
+    const coordinates = [geometry.location.lat(), geometry.location.lng()];
     const getPlaceName = () => {
       // eslint-disable-next-line no-restricted-syntax
       for (const type of response.types) {
@@ -62,7 +64,8 @@ const getPlaceDetails = ({
       number,
       zipCode,
       formattedAddress: `${getPlaceName()}${response.formatted_address}`,
-      addressNote: ''
+      addressNote: '',
+      coordinates
     });
   });
 });
