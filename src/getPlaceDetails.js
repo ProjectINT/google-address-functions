@@ -23,7 +23,7 @@ type Address = {|
   state?: ?string,
   street?: ?string,
   zipCode?: ?string,
-  coordinates?: ?Array<number>,
+  coordinates: ?Array<number>,
 |};
 
 const getAddressComponentByType = (
@@ -63,6 +63,8 @@ const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params
     }
 
     const { address_components: addressComponents, geometry } = response;
+    
+    console.log('geometry', geometry);
 
     // https://developers.google.com/maps/documentation/geocoding/start#Types
     const country = getAddressComponentByType(addressComponents, 'country');
@@ -72,7 +74,10 @@ const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params
     const number = getAddressComponentByType(addressComponents, 'street_number');
     const zipCode = getAddressComponentByType(addressComponents, 'postal_code');
 
-    const coordinates = [geometry.location.lat(), geometry.location.lng()];
+    let coordinates = null;
+    if (typeof geometry?.location?.lat === 'function' && typeof geometry.location?.lng === 'function') {
+      coordinates = [geometry.location.lat(), geometry.location.lng()];
+    }
 
     const getPlaceName = () => {
       // eslint-disable-next-line no-restricted-syntax

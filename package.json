@@ -1,6 +1,6 @@
 {
   "name": "google-address-functions",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "google address helper functions ",
   "main": "index.js",
   "scripts": {
