@@ -23,6 +23,7 @@ type Address = {|
   state?: ?string,
   street?: ?string,
   zipCode?: ?string,
+  coordinates?: ?Array<number>,
 |};
 
 const getAddressComponentByType = (
@@ -52,7 +53,7 @@ const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params
 
   const request = {
     placeId,
-    fields: ['address_components', 'formatted_address', 'name', 'types'],
+    fields: ['address_components', 'formatted_address', 'name', 'types', 'geometry'],
   };
 
   placesService.getDetails(request, (response, status) => {
@@ -61,7 +62,7 @@ const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params
       return;
     }
 
-    const { address_components: addressComponents } = response;
+    const { address_components: addressComponents, geometry } = response;
 
     // https://developers.google.com/maps/documentation/geocoding/start#Types
     const country = getAddressComponentByType(addressComponents, 'country');
@@ -70,6 +71,8 @@ const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params
     const street = getAddressComponentByType(addressComponents, 'route');
     const number = getAddressComponentByType(addressComponents, 'street_number');
     const zipCode = getAddressComponentByType(addressComponents, 'postal_code');
+
+    const coordinates = [geometry.location.lat(), geometry.location.lng()];
 
     const getPlaceName = () => {
       // eslint-disable-next-line no-restricted-syntax
@@ -91,6 +94,7 @@ const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params
       zipCode,
       formattedAddress: `${getPlaceName()}${response.formatted_address}`,
       addressNote: '',
+      coordinates,
     });
   });
 });
