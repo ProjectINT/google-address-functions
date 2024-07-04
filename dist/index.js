@@ -1,5 +1,6 @@
 const {
-  getPlaceDetails
+  getPlaceDetails,
+  composeAddressFromDetails
 } = require('./getPlaceDetails');
 const {
   placesTypes
@@ -10,5 +11,6 @@ const {
 module.exports = {
   getPlaceDetails,
   placesTypes,
-  placeIdFromText
+  placeIdFromText,
+  composeAddressFromDetails
 };

@@ -44,6 +44,71 @@ const getAddressComponentByType = (
   return '';
 };
 
+type Place = {
+  address_components: Array<AddressComponent>,
+  formatted_address?: string,
+  geometry?: {
+    location: {
+      lat: () => number,
+      lng: () => number,
+    },
+    viewport: {
+      northeast: { lat: number, lng: number },
+      southwest: { lat: number, lng: number },
+    },
+  },
+  name: string,
+  types: Array<string>,
+}
+
+type PlaceDetails = {
+  html_attributions: Array<string>,
+  result: Place,
+  status: 'OK' | 'ZERO_RESULTS' | 'NOT_FOUND' | 'INVALID_REQUEST' | 'OVER_QUERY_LIMIT' | 'REQUEST_DENIED' | 'UNKNOWN_ERROR',
+};
+
+const composeAddressFromDetails = ({ result, placeId }: { placeId: string, result: Place }): Address => {
+  const { address_components: addressComponents, geometry } = result;
+
+    // https://developers.google.com/maps/documentation/geocoding/start#Types
+    const country = getAddressComponentByType(addressComponents, 'country');
+    const state = getAddressComponentByType(addressComponents, 'administrative_area_level_1') || getAddressComponentByType(addressComponents, 'administrative_area_level_2');
+    const city = getAddressComponentByType(addressComponents, 'locality');
+    const street = getAddressComponentByType(addressComponents, 'route');
+    const number = getAddressComponentByType(addressComponents, 'street_number');
+    const zipCode = getAddressComponentByType(addressComponents, 'postal_code');
+
+    let coordinates = null;
+
+    // $FlowFixMe[unnecessary-optional-chain]
+    if (typeof geometry?.location?.lat === 'function' && typeof geometry.location?.lng === 'function') {
+      coordinates = [geometry.location.lat(), geometry.location.lng()];
+    }
+
+    const getPlaceName = () => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const type of result.types) {
+        if (placesTypes.includes(type)) {
+          return `${result.name} `;
+        }
+      }
+      return '';
+    };
+
+    return {
+      id: placeId,
+      country,
+      state,
+      city,
+      street,
+      number,
+      zipCode,
+      formattedAddress: `${getPlaceName()}${result.formatted_address || ''}`,
+      addressNote: '',
+      coordinates,
+    }
+};
+
 
 const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params): Promise<Address> => new Promise((resolve, reject) => {
 
@@ -56,50 +121,18 @@ const getPlaceDetails = ({ placeId, placesService, PlacesServiceStatus }: Params
     fields: ['address_components', 'formatted_address', 'name', 'types', 'geometry'],
   };
 
-  placesService.getDetails(request, (response, status) => {
+  placesService.getDetails(request, (result, status) => {
     if (status !== PlacesServiceStatus.OK) {
       reject();
       return;
     }
 
-    const { address_components: addressComponents, geometry } = response;
-    
-    // https://developers.google.com/maps/documentation/geocoding/start#Types
-    const country = getAddressComponentByType(addressComponents, 'country');
-    const state = getAddressComponentByType(addressComponents, 'administrative_area_level_1') || getAddressComponentByType(addressComponents, 'administrative_area_level_2');
-    const city = getAddressComponentByType(addressComponents, 'locality');
-    const street = getAddressComponentByType(addressComponents, 'route');
-    const number = getAddressComponentByType(addressComponents, 'street_number');
-    const zipCode = getAddressComponentByType(addressComponents, 'postal_code');
+    const address = composeAddressFromDetails({ result, placeId })
 
-    let coordinates = null;
-    if (typeof geometry?.location?.lat === 'function' && typeof geometry.location?.lng === 'function') {
-      coordinates = [geometry.location.lat(), geometry.location.lng()];
-    }
-
-    const getPlaceName = () => {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const type of response.types) {
-        if (placesTypes.includes(type)) {
-          return `${response.name} `;
-        }
-      }
-      return '';
-    };
-
-    resolve({
-      id: placeId,
-      country,
-      state,
-      city,
-      street,
-      number,
-      zipCode,
-      formattedAddress: `${getPlaceName()}${response.formatted_address}`,
-      addressNote: '',
-      coordinates,
-    });
+    resolve(address);
   });
 });
 
 module.exports.getPlaceDetails = getPlaceDetails;
+
+module.exports.composeAddressFromDetails = composeAddressFromDetails;
