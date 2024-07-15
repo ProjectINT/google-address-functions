@@ -51,7 +51,6 @@ function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocomplet
       });
     
       const response = await suggestions.json();
-      console.log('response', response);
     
       const resultSuggestions = formatSuggestions(response.suggestions);
     
