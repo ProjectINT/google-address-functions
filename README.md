@@ -1,11 +1,11 @@
 # google-address-functions
-functions for google places
+
+Functions for interacting with Google Places API to handle address details.
 
 ## Installation
 
-```
-  yarn add google-address-functions
-
+```bash
+yarn add google-address-functions
 ```
 
 ```js
@@ -20,7 +20,7 @@ const {
 
 # To compose correct address type use composeAddressFromDetails:
 
-```
+```js
 type Address = {
   id: string;
   city: string;
@@ -57,5 +57,83 @@ type ComposeAddressFromDetailsArgs = {
  */
 
 const address: Address = composeAddressFromDetails<ComposeAddressFromDetailsArgs>({ response, placeId });
+```
+
+# Autocomplete (new) functionality:
+
+## composeAddressFromDetailsNew Function
+
+This function `composeAddressFromDetailsNew` transforms structured address components and location details into a standardized address format. It is particularly useful for applications integrating with Google Maps Geocoding API or similar services.
+
+## Function Signature
+
+```javascript
+/**
+ * Compose an Address object from detailed address components and location.
+ * @param {ComposeAddressFromDetailsNewArg} params - The input parameters object.
+ * @returns {Address} - The composed address object.
+ */
+const composeAddressFromDetailsNew = ({ addressComponents, location, placeId }: ComposeAddressFromDetailsNewArg): Address => {
+  // function body
+};
+```
+## Parameters
+
+- `addressComponents` (Array): An array of address components obtained from a geocoding service.
+- `location` ({ lat: number, lng: number }): The geographic coordinates (latitude and longitude) of the place.
+- `placeId` (string): A unique identifier for the place.
+
+## Return Value
+
+The function returns an `Address`
+
+
+## Usage
+
+### Example usage of `composeAddressFromDetailsNew`:
+
+```javascript
+const addressComponents = [
+  { type: 'country', name: 'United States' },
+  { type: 'administrative_area_level_1', name: 'California' },
+  { type: 'locality', name: 'San Francisco' },
+  { type: 'route', name: 'Market St' },
+  { type: 'street_number', name: '123' },
+  { type: 'postal_code', name: '94103' },
+];
+
+const location = { lat: 37.7749, lng: -122.4194 };
+const placeId = 'ChIJZa6ezJa8j4AR1p1nTSaRtuQ';
+
+const result = composeAddressFromDetailsNew({ addressComponents, location, placeId });
+console.log(result);
+```
+
+# PlacesAutocompleteNew Class
+
+The `placesAutocompleteNew` function returns methods to fetch address suggestions and details using the Google Places API.
+
+
+```js
+
+type PlacesFunctions = {
+  getSuggestions: (actualQuery: string) => Promise<SuggestionOption[]>,
+  getPlaceDetails: (placeId: string) => Promise<Address>,
+}
+
+const { placesAutocompleteNew } = require('google-address-functions');
+
+const { getSuggestions, getPlaceDetails }: PlacesFunctions = placesAutocompleteNew({
+  googleApiKey: 'YOUR_GOOGLE_API_KEY',
+  searchLength: 3, // after which character send request
+});
+
+getSuggestions('1600 Amphitheatre Parkway').then((suggestions) => {
+  console.log(suggestions);
+});
+
+getPlaceDetails('ChIJi1uPs_1x5kcRbh8M8XJSNMA').then((address) => {
+  console.log(address)
+})
 
 ```
