@@ -67,49 +67,112 @@ This function `composeAddressFromDetailsNew` transforms structured address compo
 
 ## Function Signature
 
-```javascript
-/**
- * Compose an Address object from detailed address components and location.
- * @param {ComposeAddressFromDetailsNewArg} params - The input parameters object.
- * @returns {Address} - The composed address object.
- */
-const composeAddressFromDetailsNew = ({ addressComponents, location, placeId }: ComposeAddressFromDetailsNewArg): Address => {
-  // function body
-};
-```
 ## Parameters
 
 - `addressComponents` (Array): An array of address components obtained from a geocoding service.
 - `location` ({ lat: number, lng: number }): The geographic coordinates (latitude and longitude) of the place.
-- `placeId` (string): A unique identifier for the place.
+- `id` (string): A unique identifier for the place.
+- `formattedAddress` (string): Full address
+- `types` (array): current place types array
+- `displayName` (string): place name
 
 ## Return Value
 
 The function returns an `Address`
 
+```javascript
+// All this fields returned with new version of https://developers.google.com/maps/documentation/places/web-service/place-details
+type ComposeAddressFromDetailsNewArg = {|
+  addressComponents: Array<AddressComponent>,
+  location: { lat: number, lng: number },
+  id: string, // placeId
+  formattedAddress: string,
+  types: Array<string>,
+  displayName: string,
+|}
+
+/**
+ * Compose an Address object from detailed address components and location.
+ * @param {ComposeAddressFromDetailsNewArg} params - The input parameters object.
+ * @returns {Address} - The composed address object.
+ */
+
+const composeAddressFromDetailsNew = ({ addressComponents, location, id, formattedAddress, types, display }: ComposeAddressFromDetailsNewArg): Address
+
+```
 
 ## Usage
 
 ### Example usage of `composeAddressFromDetailsNew`:
 
 ```javascript
-const addressComponents = [
-  { type: 'country', name: 'United States' },
-  { type: 'administrative_area_level_1', name: 'California' },
-  { type: 'locality', name: 'San Francisco' },
-  { type: 'route', name: 'Market St' },
-  { type: 'street_number', name: '123' },
-  { type: 'postal_code', name: '94103' },
-];
+const getPlaceDetailsNewResponse = {
+    id: "ChIJi1uPs_1x5kcRbh8M8XJSNMA",
+    types: [
+        "city_hall",
+        "tourist_attraction",
+        "local_government_office",
+        "point_of_interest",
+        "establishment"
+    ],
+    formattedAddress: "75004 Paris, France",
+    addressComponents: [
+        {
+            longText: "Paris",
+            shortText: "Paris",
+            types: [
+                "locality",
+                "political"
+            ],
+            languageCode: "en"
+        },
+        {
+            longText: "Paris",
+            shortText: "Paris",
+            types: [
+                "administrative_area_level_2",
+                "political"
+            ],
+            languageCode: "en"
+        },
+        {
+            longText: "Île-de-France",
+            shortText: "IDF",
+            types: [
+                "administrative_area_level_1",
+                "political"
+            ],
+            languageCode: "en"
+        },
+        {
+            longText: "France",
+            shortText: "FR",
+            types: [
+                "country",
+                "political"
+            ],
+            languageCode: "en"
+        },
+        {
+            longText: "75004",
+            shortText: "75004",
+            types: [
+                "postal_code"
+            ],
+            languageCode: "en-US"
+        }
+    ],
+    location: {
+        latitude: 48.8564826,
+        longitude: 2.3524135
+    }
+}
 
-const location = { lat: 37.7749, lng: -122.4194 };
-const placeId = 'ChIJZa6ezJa8j4AR1p1nTSaRtuQ';
-
-const result = composeAddressFromDetailsNew({ addressComponents, location, placeId });
-console.log(result);
+const address: Address = composeAddressFromDetailsNew(...getPlaceDetailsNewResponse);
+console.log(address);
 ```
 
-# PlacesAutocompleteNew Class
+# The `placesAutocompleteNew` function:
 
 The `placesAutocompleteNew` function returns methods to fetch address suggestions and details using the Google Places API.
 
