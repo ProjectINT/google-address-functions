@@ -1,10 +1,13 @@
-const { getPlaceDetails, composeAddressFromDetails } = require('./getPlaceDetails');
+const { getPlaceDetails } = require('./getPlaceDetails');
+const { composeAddressFromDetails } = require('./composeAddressFromDetails');
+const { composeAddressFromDetailsNew } = require('./composeAddressFromDetailsNew');
 const { placesTypes } = require('./placesTypes');
-const { placeIdFromText } = require('./placeIdFromText');
+const { placesAutocompleteNew } = require('./placesAutocompleteNew');
 
 module.exports = {
   getPlaceDetails,
   placesTypes,
-  placeIdFromText,
   composeAddressFromDetails,
+  composeAddressFromDetailsNew,
+  placesAutocompleteNew,
 }

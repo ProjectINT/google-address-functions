@@ -21,6 +21,7 @@
 <PROJECT_ROOT>/__graphql__/.*
 
 [libs]
+./src/global.flow.js
 
 [options]
 include_warnings=true
