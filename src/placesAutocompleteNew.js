@@ -1,5 +1,6 @@
 // @flow strict
 const { composeAddressFromDetailsNew } = require('./composeAddressFromDetailsNew')
+const { v4 } = require('./helpers');
 
 const SUGGESTIONS_ENDPOINT = 'https://places.googleapis.com/v1/places:autocomplete';
 const DETAILS_ENDPOINT = 'https://places.googleapis.com/v1/places';
@@ -30,6 +31,8 @@ function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocomplet
     return formatted;
   };
 
+  let sessionToken = v4();
+
   return {
     async getSuggestions (actualQuery: string): Promise<SuggestionOption[]> {
       /* To prevent the user from typing in less than 3 characters and getting a list of suggestions. */
@@ -47,6 +50,7 @@ function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocomplet
         },
         body: JSON.stringify({
           input: actualQuery,
+          sessionToken,
         }),
       });
     
@@ -57,14 +61,17 @@ function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocomplet
       return resultSuggestions;
     },
     async getPlaceDetails(placeId: string): Promise<Address> {
-      const response = await fetch(`${DETAILS_ENDPOINT}/${placeId}`, {
+      const response = await fetch(`${DETAILS_ENDPOINT}/${placeId}?sessionToken=${sessionToken}`, {
         method: 'GET',
         headers: {
           'X-Goog-FieldMask': 'id,addressComponents,location,types,formattedAddress,displayName', // Specify the fields you need
           'X-Goog-Api-Key': googleApiKey,
         },
       });
+
       const data = await response.json();
+      
+      sessionToken = v4();
 
       return composeAddressFromDetailsNew(data);    
     }
