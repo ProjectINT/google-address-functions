@@ -70,7 +70,6 @@ function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocomplet
       });
 
       const data = await response.json();
-      console.log('data', data);
       
       sessionToken = v4();
 
