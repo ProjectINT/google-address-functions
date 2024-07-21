@@ -26,6 +26,12 @@ type AddressComponent = {
   short_name: string,
 }
 
+type AddressComponentNew = {
+  types: Array<string>,
+  longText: string,
+  shortText: string,
+}
+
 type Place = {
   address_components: Array<AddressComponent>,
   formatted_address?: string,

@@ -1,10 +1,10 @@
 // @flow strict
-const { getPlaceName, getAddressComponentByType } = require('./helpers');
+const { getPlaceName, getAddressComponentByTypeNew } = require('./helpers');
 
 
 type ComposeAddressFromDetailsNewArg = {|
-  addressComponents: Array<AddressComponent>,
-  location: { lat: number, lng: number },
+  addressComponents: Array<AddressComponentNew>,
+  location: { latitude: number, longitude: number },
   id: string, // placeId
   formattedAddress: string,
   types: Array<string>,
@@ -14,18 +14,18 @@ type ComposeAddressFromDetailsNewArg = {|
 module.exports.composeAddressFromDetailsNew = ({
   addressComponents, location, id, formattedAddress, types, displayName,
 }: ComposeAddressFromDetailsNewArg): Address => {
-  const country = getAddressComponentByType(addressComponents, 'country');
-  const state = getAddressComponentByType(addressComponents, 'administrative_area_level_1') || getAddressComponentByType(addressComponents, 'administrative_area_level_2');
-  const city = getAddressComponentByType(addressComponents, 'locality');
-  const street = getAddressComponentByType(addressComponents, 'route');
-  const number = getAddressComponentByType(addressComponents, 'street_number');
-  const zipCode = getAddressComponentByType(addressComponents, 'postal_code');
+  const country = getAddressComponentByTypeNew(addressComponents, 'country');
+  const state = getAddressComponentByTypeNew(addressComponents, 'administrative_area_level_1') || getAddressComponentByTypeNew(addressComponents, 'administrative_area_level_2');
+  const city = getAddressComponentByTypeNew(addressComponents, 'locality');
+  const street = getAddressComponentByTypeNew(addressComponents, 'route');
+  const number = getAddressComponentByTypeNew(addressComponents, 'street_number');
+  const zipCode = getAddressComponentByTypeNew(addressComponents, 'postal_code');
 
   let coordinates = null;
 
   // $FlowFixMe[unnecessary-optional-chain]
-  if (location?.lat && location.lng) {
-    coordinates = [location.lat, location.lng];
+  if (location?.latitude && location.longitude) {
+    coordinates = [location.latitude, location.longitude];
   }
 
   return {

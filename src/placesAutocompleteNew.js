@@ -56,7 +56,7 @@ function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocomplet
     
       const response = await suggestions.json();
     
-      const resultSuggestions = formatSuggestions(response.suggestions);
+      const resultSuggestions = formatSuggestions(response.suggestions || []);
     
       return resultSuggestions;
     },

@@ -33,6 +33,23 @@ module.exports.getAddressComponentByType = (components: Array<AddressComponent>,
   return '';
 };
 
+module.exports.getAddressComponentByTypeNew = (components: Array<AddressComponentNew>, type: string): string => {
+  if (!Array.isArray(components)) return '';
+
+  const component = components.find(({ types }) => types.includes(type));
+  
+  if (component) {
+    if (component.longText) {
+      return component.longText;
+    }
+    if (component.shortText) {
+      return component.shortText;
+    }
+    return '';
+  }
+  return '';
+};
+
 module.exports.v4 = (): string => {
   let d = new Date().getTime();
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
