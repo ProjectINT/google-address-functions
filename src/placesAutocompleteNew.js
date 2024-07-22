@@ -39,7 +39,7 @@ function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocomplet
       // $FlowFixMe[incompatible-type] flow not understand that actualQuery is not undefined
   
       if (actualQuery && actualQuery.length !== 0 && actualQuery.length < searchLength) {
-  
+        
       }
     
       const suggestions = await fetch(SUGGESTIONS_ENDPOINT, {

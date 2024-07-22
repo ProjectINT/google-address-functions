@@ -8,7 +8,10 @@ type ComposeAddressFromDetailsNewArg = {|
   id: string, // placeId
   formattedAddress: string,
   types: Array<string>,
-  displayName: string,
+  displayName: {
+    text: string,
+    languageCode: string,
+  },
 |}
 
 module.exports.composeAddressFromDetailsNew = ({
@@ -36,7 +39,7 @@ module.exports.composeAddressFromDetailsNew = ({
     street,
     number,
     zipCode,
-    formattedAddress: `${getPlaceName({ types, displayName })}${formattedAddress || ''}`,
+    formattedAddress: `${getPlaceName({ types, displayName: displayName.text })}${formattedAddress || ''}`,
     addressNote: '',
     coordinates,
   };
