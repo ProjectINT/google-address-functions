@@ -23,10 +23,6 @@ function placesAutocompleteNew({
   let sessionToken = v4();
   return {
     async getSuggestions(actualQuery) {
-      /* To prevent the user from typing in less than 3 characters and getting a list of suggestions. */
-      // $FlowFixMe[incompatible-type] flow not understand that actualQuery is not undefined
-
-      if (actualQuery && actualQuery.length !== 0 && actualQuery.length < searchLength) {}
       const suggestions = await fetch(SUGGESTIONS_ENDPOINT, {
         method: 'POST',
         headers: {
