@@ -13,6 +13,7 @@ type SuggestionOption = {
 type PlacesAutocompleteProps = {
   googleApiKey: string,
   searchLength: number,
+  languageCode?: 'en' | 'af' | 'sq' | 'am' | 'ar' | 'hy' | 'az' | 'eu' | 'be' | 'bn' | 'bs' | 'bg' | 'my' | 'ca' | 'zh' | 'zh-CN' | 'zh-HK' | 'zh-TW' | 'hr' | 'cs' | 'da' | 'nl' | 'en' | 'en-AU' | 'en-GB' | 'et' | 'fa' | 'fi' | 'fil' | 'fr' | 'fr-CA' | 'gl' | 'ka' | 'de' | 'el' | 'gu' | 'iw' | 'hi' | 'hu' | 'is' | 'id' | 'it',
 };
 
 type PlacesFunctions = {
@@ -20,7 +21,7 @@ type PlacesFunctions = {
   getPlaceDetails: (placeId: string) => Promise<Address>,
 }
 
-function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocompleteProps): PlacesFunctions {
+function placesAutocompleteNew({ googleApiKey, searchLength, languageCode = 'en' }: PlacesAutocompleteProps): PlacesFunctions {
   const formatSuggestions = (response: Array<{ placePrediction: PlacePrediction }>): SuggestionOption[] => {
     const formatPrediction = (prediction: PlacePrediction) => ({
       formattedAddress: prediction.text.text,
@@ -54,7 +55,7 @@ function placesAutocompleteNew({ googleApiKey, searchLength }: PlacesAutocomplet
       return resultSuggestions;
     },
     async getPlaceDetails(placeId: string): Promise<Address> {
-      const response = await fetch(`${DETAILS_ENDPOINT}/${placeId}?sessionToken=${sessionToken}`, {
+      const response = await fetch(`${DETAILS_ENDPOINT}/${placeId}?sessionToken=${sessionToken}&languageCode=${languageCode}`, {
         method: 'GET',
         headers: {
           'X-Goog-FieldMask': 'id,addressComponents,location,types,formattedAddress,displayName', // Specify the fields you need
