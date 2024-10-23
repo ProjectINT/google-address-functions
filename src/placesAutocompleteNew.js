@@ -43,6 +43,7 @@ function placesAutocompleteNew({ googleApiKey, searchLength, languageCode = 'en'
           'X-Goog-Api-Key': googleApiKey,
         },
         body: JSON.stringify({
+          languageCode: languageCode,
           input: actualQuery,
           sessionToken,
         }),
