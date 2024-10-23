@@ -8,7 +8,8 @@ const SUGGESTIONS_ENDPOINT = 'https://places.googleapis.com/v1/places:autocomple
 const DETAILS_ENDPOINT = 'https://places.googleapis.com/v1/places';
 function placesAutocompleteNew({
   googleApiKey,
-  searchLength
+  searchLength,
+  languageCode = 'en'
 }) {
   const formatSuggestions = response => {
     const formatPrediction = prediction => ({
@@ -30,6 +31,7 @@ function placesAutocompleteNew({
           'X-Goog-Api-Key': googleApiKey
         },
         body: JSON.stringify({
+          languageCode: languageCode,
           input: actualQuery,
           sessionToken
         })
@@ -39,7 +41,7 @@ function placesAutocompleteNew({
       return resultSuggestions;
     },
     async getPlaceDetails(placeId) {
-      const response = await fetch(`${DETAILS_ENDPOINT}/${placeId}?sessionToken=${sessionToken}`, {
+      const response = await fetch(`${DETAILS_ENDPOINT}/${placeId}?sessionToken=${sessionToken}&languageCode=${languageCode}`, {
         method: 'GET',
         headers: {
           'X-Goog-FieldMask': 'id,addressComponents,location,types,formattedAddress,displayName',
