@@ -28,7 +28,7 @@ module.exports.composeAddressFromDetails = ({ result, placeId }: { placeId: stri
       street,
       number,
       zipCode,
-      formattedAddress: `${getPlaceName({ types: result.types, displayName: result.name })}${result.formatted_address || ''}`,
+      formattedAddress: `${getPlaceName({ placeTypes: result.types, displayName: result.name })}${result.formatted_address || ''}`,
       addressNote: '',
       coordinates,
     }
