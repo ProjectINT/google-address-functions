@@ -95,14 +95,14 @@ function placesAutocompleteNew({ googleApiKey, searchLength, languageCode = 'en'
       return composeAddressFromDetailsNew(data);
     },
     async getPlaceDetailsWithOriginLocale(placeId: string): Promise<PlaceDetailsWithOriginLocale> {
-      const responseOrigin = await fetchPlaceDetails({
+      const responseOrigin = fetchPlaceDetails({
         placeId,
         sessionToken,
         languageCode: "en",
         googleApiKey
       });
 
-      const responseLocalized = await fetchPlaceDetails({
+      const responseLocalized = fetchPlaceDetails({
         placeId,
         sessionToken,
         languageCode,
