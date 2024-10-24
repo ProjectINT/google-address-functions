@@ -2,14 +2,15 @@
 const { placesTypes } = require('./placesTypes');
 
 type PlaceNameArg = {|
-  types: Array<string>,
+  placeTypes: Array<string>,
   displayName: string,  
 |};
 
-module.exports.getPlaceName = ({ types, displayName }: PlaceNameArg): string => {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const type of types) {
-    if (placesTypes.includes(type)) {
+module.exports.getPlaceName = ({placeTypes, displayName}: PlaceNameArg): string => {
+  if (!Array.isArray(placeTypes)) return '';
+
+  for (const placeType of placeTypes) {
+    if (placesTypes.includes(placeType)) {
       return `${displayName} `;
     }
   }

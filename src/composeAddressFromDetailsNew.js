@@ -39,7 +39,7 @@ module.exports.composeAddressFromDetailsNew = ({
     street,
     number,
     zipCode,
-    formattedAddress: `${getPlaceName({ types, displayName: displayName.text })}${formattedAddress || ''}`,
+    formattedAddress: `${getPlaceName({ placeTypes: types, displayName: displayName.text })}${formattedAddress || ''}`,
     addressNote: '',
     coordinates,
   };
