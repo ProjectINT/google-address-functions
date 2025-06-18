@@ -24,7 +24,7 @@ type PlacesAutocompleteProps = {
 };
 
 type PlacesFunctions = {
-  getSuggestions: (actualQuery: string, filters?: Array<string>) => Promise<SuggestionOption[]>,
+  getSuggestions: (actualQuery: string, includeTypes?: Array<string>) => Promise<SuggestionOption[]>,
   getPlaceDetails: (placeId: string) => Promise<Address>,
   getPlaceDetailsWithOriginLocale: (placeId: string) => Promise<PlaceDetailsWithOriginLocale>,
 };
@@ -60,7 +60,7 @@ function placesAutocompleteNew({ googleApiKey, searchLength, languageCode = 'en'
   let sessionToken = v4();
 
   return {
-    async getSuggestions (actualQuery: string, filters?: Array<string>): Promise<SuggestionOption[]> {
+    async getSuggestions (actualQuery: string, includeTypes?: Array<string>): Promise<SuggestionOption[]> {
       const suggestions = await fetch(SUGGESTIONS_ENDPOINT, {
         method: 'POST',
         headers: {
@@ -71,7 +71,7 @@ function placesAutocompleteNew({ googleApiKey, searchLength, languageCode = 'en'
           languageCode: languageCode,
           input: actualQuery,
           sessionToken,
-          ...(filters && { "includedPrimaryTypes": filters }),
+          ...(includeTypes && { "includedPrimaryTypes": includeTypes }),
         }),
       });
     
